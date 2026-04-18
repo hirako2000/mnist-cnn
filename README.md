@@ -1,3 +1,14 @@
+[![Pytorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white")](https://pytorch.org/)
+[![Ruff](https://img.shields.io/badge/Linter-Ruff-brightgreen?style=for-the-badge)](https://github.com/astral-sh/ruff)
+
+[![ONNX Runtime](https://img.shields.io/badge/ONNX-Runtime-005A9C?style=for-the-badge)](https://onnxruntime.ai/)
+[![WebGPU](https://img.shields.io/badge/WebGPU-Ready-FF6B6B?style=for-the-badge)](https://www.w3.org/TR/webgpu/)
+[![Hugging Face](https://img.shields.io/badge/🤗-Dataset-FFD21E?style=for-the-badge)](https://huggingface.co/ylecun/mnist)
+[![License](https://img.shields.io/badge/License-CC--BY--NC-blue?style=for-the-badge)](https://creativecommons.org/licenses/by-nc/4.0/deed.en)
+
+[Live demo](https://mnist.mtassoumt.uk)
+
+
 # MNIST CNN
 
 <p align="center">
