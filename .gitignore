@@ -1,0 +1,27 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.ruff_cache
+
+# Virtual environments
+.venv
+
+
+# OS
+.DS_Store
+
+# Data
+/data
+/models
+/visualisations
+
+# heavy/ irrelevant
+a.txt
+a.txt.gpg
+spit.sh
+list.sh
+document.md

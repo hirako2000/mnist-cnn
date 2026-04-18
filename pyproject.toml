@@ -1,0 +1,52 @@
+[project]
+name = "mnist-cnn"
+version = "0.1.0"
+description = "A faithful LeNet-5 CNN"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=4.8.4",
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.4",
+    "onnxruntime>=1.24.4",
+    "onnxscript>=0.6.2",
+    "pillow>=12.2.0",
+    "pillow-avif-plugin>=1.5.5",
+    "polars>=1.39.3",
+    "pyarrow>=23.0.1",
+    "ruff>=0.15.9",
+    "torch>=2.11.0",
+    "torchvision>=0.26.0",
+    "tqdm>=4.67.3",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.3.1",
+    "pytest>=9.0.2",
+    "ruff>=0.15.9",
+]
+
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+
+ignore = ["E501"]
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
