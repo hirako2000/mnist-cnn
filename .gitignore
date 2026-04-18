@@ -17,7 +17,6 @@ wheels/
 # Data
 /data
 /models
-/visualisations
 
 # heavy/ irrelevant
 a.txt
