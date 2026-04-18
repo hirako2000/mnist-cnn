@@ -206,7 +206,7 @@
             const statusDiv = document.getElementById('status');
             statusDiv.innerHTML = '<div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>Loading model with WebGPU...';
             
-            const success = await classifier.loadModel('./web/model.onnx');
+            const success = await classifier.loadModel('./model.onnx');
             
             if (success) {
                 statusDiv.innerHTML = '<div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>✅ Ready! Draw or upload a digit';
