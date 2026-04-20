@@ -107,6 +107,44 @@ Here are example predictions from a test set with particularly poorly written di
 
 ![Prediction examples](./visualisations/prediction_examples.avif)
 
+## 🧪 ReLU Activation
+
+> **This section references the [`improvement/relu`](https://github.com/hirako2000/mnist-cnn/tree/improvement/relu) branch**
+
+The original LeNet-5 uses `tanh` activations (state-of-the-art in 1998). Modern CNNs replaced this with [Rectified Linear Unit](https://en.wikipedia.org/wiki/Rectified_linear_unit) (ReLU) in 2010, enabling much deeper networks.
+
+Even on shallow LeNet-5, ReLU provides measurable benefits:
+
+- **+0.12% peak accuracy** (98.99% → 99.11%)
+- **23% lower test loss** (0.0448 → 0.0345) - more confident predictions
+- **Faster convergence** to 99% accuracy
+- **Better generalization** (reduced overfitting)
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/hirako2000/mnist-cnn/improvement/relu/visualisations/training_comparison_relu_vs_tanh.avif" 
+       alt="ReLU vs Tanh Comparison"
+       width="90%">
+  <br>
+  <em>Training dynamics: ReLU (green) vs Tanh (red) over 20 epochs</em>
+</div>
+
+### Observations from the comparison:
+
+| Metric | Tanh (Original) | ReLU (Improved) | Improvement |
+|--------|----------------|----------------|-------------|
+| Best Test Accuracy | 98.99% | 99.11% | **+0.12%** |
+| Final Test Accuracy | 98.86% | 99.03% | **+0.17%** |
+| Minimum Test Loss | 0.0327 | 0.0286 | **-12.5%** |
+| Epochs to 99% | 16 | 10 | **6 epochs faster** |
+| Overfitting Gap | 0.94% | 0.73% | **-22%** |
+
+### Why ReLU matters
+
+This improvement bridges the 12-year gap between LeNet-5 (1998) and the deep learning revolution (2010-2012):
+- **1998**: LeNet-5 with tanh - works for shallow networks
+- **2010**: ReLU proposed - enables training of deep networks
+- **2012**: AlexNet uses ReLU, wins ImageNet with 8 layers
+
 ## How it works
 
 The model is a simple CNN with two convolutional layers, two max-pooling layers, and two fully connected layers. The [train.py](./src/train/train.py) code includes detailed comments explaining:
