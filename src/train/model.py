@@ -15,9 +15,10 @@ class LeNet5(nn.Module):
 
     This is a modernized implementation of Yann LeCun's LeNet-5 architecture
     from the 1998 paper "Gradient-Based Learning Applied to Document Recognition",
-    with two post-1998 improvements:
+    with three post-1998 improvements:
     - ReLU activations (2010) - solves vanishing gradient problem
     - Xavier/Glorot initialization (2010) - stable gradient variance
+    - Dropout regularization (2012) - prevents overfitting
 
     ARCHITECTURE EXPLANATION:
 
@@ -51,10 +52,13 @@ class LeNet5(nn.Module):
     - Preserves signal variance through forward and backward passes
     - Results in faster convergence and more stable training
 
-    Why no dropout?
-    - Dropout was invented after LeNet-5 (2012 vs 1998)
-    - Original LeNet-5 relied on architecture design for regularization
-    - The subsampling layers provide built-in regularization
+    Why Dropout?
+    - Dropout (Hinton et al., 2012) prevents overfitting by randomly dropping neurons
+    - During training, each neuron is kept with probability p (typically 0.5 for FC layers)
+    - This forces the network to learn redundant representations
+    - Acts as an ensemble of exponentially many thinned networks
+    - At test time, all neurons are used with weights scaled by p
+    - Standard dropout rate: 0.5 for fully connected layers, 0.25 for convolutional layers
 
     LAYER DETAILS (following original LeNet-5 architecture):
 
@@ -75,6 +79,7 @@ class LeNet5(nn.Module):
     - Reduces 32x32 → 16x16
     - Each output is the average of 4 inputs
     - In original LeNet-5, this was subsampling with trainable coefficients
+    - Dropout: 25% after pooling (spatial dropout)
 
     C3: Conv2d(6, 16, kernel_size=5)
     - Input: 6 feature maps from S2
@@ -88,6 +93,7 @@ class LeNet5(nn.Module):
     S4: AvgPool2d(2, stride=2)
     - 2x2 average pooling, stride 2
     - Reduces 12x12 → 6x6
+    - Dropout: 25% after pooling (spatial dropout)
 
     C5: Conv2d(16, 120, kernel_size=5)
     - Input: 16 feature maps, 6x6 spatial size
@@ -107,6 +113,7 @@ class LeNet5(nn.Module):
     - 84 was chosen to match a 7x12 output grid (for character recognition)
     - Activation: ReLU
     - Initialization: Xavier uniform
+    - Dropout: 50% after activation (standard for FC layers)
 
     Output: Linear(84, 10)
     - Final classification layer
@@ -114,6 +121,7 @@ class LeNet5(nn.Module):
     - Raw logits (softmax applied during loss calculation)
     - No activation (linear layer)
     - Initialization: Xavier uniform
+    - No dropout (output layer needs all neurons)
     """
 
     def __init__(self):
@@ -150,6 +158,17 @@ class LeNet5(nn.Module):
         # 84 inputs → 10 outputs (one per digit 0-9)
         self.fc2 = nn.Linear(84, 10)
 
+        # ----- DROPOUT LAYERS -----
+        # Dropout2d for convolutional feature maps (spatial dropout)
+        # Rate 0.25 means 25% of feature maps are zeroed
+        # This is effective for convolutional layers because nearby pixels are correlated
+        self.dropout_conv = nn.Dropout2d(0.25)
+
+        # Dropout for fully connected layers
+        # Rate 0.5 is the standard rate proposed in the original Dropout paper
+        # Randomly drops half of the neurons, forcing redundant learning
+        self.dropout_fc = nn.Dropout(0.5)
+
         # ----- XAVIER/GLOROT INITIALIZATION -----
         # Apply Xavier uniform initialization to all convolutional and linear layers
         # Formula: samples from Uniform(-a, a) where a = sqrt(6 / (fan_in + fan_out))
@@ -182,6 +201,10 @@ class LeNet5(nn.Module):
         """
         Forward pass: data flows through the network.
 
+        During training, dropout randomly zeros neurons.
+        During evaluation, dropout is disabled and no scaling is needed
+        because PyTorch automatically scales during training.
+
         Args:
             x: Input tensor of shape (batch_size, 1, 28, 28)
 
@@ -189,16 +212,18 @@ class LeNet5(nn.Module):
             Raw logits of shape (batch_size, 10)
             (Use softmax separately to get probabilities)
         """
-        # C1: Conv2d(1,6,5x5) → ReLU → S2: AvgPool
+        # C1: Conv2d(1,6,5x5) → ReLU → S2: AvgPool → Dropout
         # Input: (batch, 1, 28, 28) → Output: (batch, 6, 14, 14)
         x = torch.relu(self.conv1(x))
         x = self.pool1(x)
+        x = self.dropout_conv(x)  # Spatial dropout after first pooling
 
-        # C3: Conv2d(6,16,5x5) → ReLU → S4: AvgPool
+        # C3: Conv2d(6,16,5x5) → ReLU → S4: AvgPool → Dropout
         # Input: (batch, 6, 14, 14) → Output: (batch, 16, 5, 5)
         # Note: 14x14 with 5x5 kernel, no padding → 10x10, then pool → 5x5
         x = torch.relu(self.conv2(x))
         x = self.pool2(x)
+        x = self.dropout_conv(x)  # Spatial dropout after second pooling
 
         # C5: Conv2d(16,120,5x5) → ReLU
         # Input: (batch, 16, 5, 5) → Output: (batch, 120, 1, 1)
@@ -208,11 +233,13 @@ class LeNet5(nn.Module):
         # (batch, 120, 1, 1) → (batch, 120)
         x = x.view(x.size(0), -1)
 
-        # F6: Linear(120,84) → ReLU
+        # F6: Linear(120,84) → ReLU → Dropout
         # (batch, 120) → (batch, 84)
         x = torch.relu(self.fc1(x))
+        x = self.dropout_fc(x)  # Standard dropout after first FC layer
 
         # Output layer: Linear(84,10) - raw logits
+        # No dropout before final layer (preserves all information for classification)
         # (batch, 84) → (batch, 10)
         x = self.fc2(x)
 

@@ -531,7 +531,7 @@ def main():
 
     # ----- SAVE TRAINING HISTORY -----
     # This JSON file can be used to plot learning curves
-    with open(model_dir / "training_xavier_history.json", "w") as f:
+    with open(model_dir / "training_dropout_history.json", "w") as f:
         json.dump(history, f, indent=2)
 
     # ----- FINAL SUMMARY -----
@@ -540,7 +540,9 @@ def main():
     print(f"🏆 Best test accuracy: {best_acc:.2f}%")
     print(f"📁 Model saved to: {model_dir / 'best_model.pt'}")
     print(f"📁 Confusion matrix saved to: {model_dir / 'confusion_matrix.npy'}")
-    print(f"📁 Training history saved to: {model_dir / 'training_xavier_history.json'}")
+    print(
+        f"📁 Training history saved to: {model_dir / 'training_dropout_history.json'}"
+    )
 
 
 if __name__ == "__main__":
