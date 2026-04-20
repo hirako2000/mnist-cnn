@@ -209,10 +209,10 @@
             const success = await classifier.loadModel('./model.onnx');
             
             if (success) {
-                statusDiv.innerHTML = '<div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>✅ Ready! Draw or upload a digit';
+                statusDiv.innerHTML = '<div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>Ready! Draw or upload a digit';
                 document.getElementById('backendInfo').innerHTML = classifier.backend;
             } else {
-                statusDiv.innerHTML = '<div class="w-2 h-2 bg-red-400 rounded-full"></div>❌ Failed to load model';
+                statusDiv.innerHTML = '<div class="w-2 h-2 bg-red-400 rounded-full"></div>Failed to load model';
             }
         }
         
@@ -263,7 +263,7 @@
                 if (result) displayPrediction(result);
                 
                 btn.disabled = false;
-                btn.innerHTML = '🔮 Predict uploaded image';
+                btn.innerHTML = '🔮 Predict image';
             } else {
                 alert('Please select an image first');
             }
