@@ -13,8 +13,9 @@ class LeNet5(nn.Module):
     """
     LeNet-5 Convolutional Neural Network for digit classification.
 
-    This is a faithful implementation of Yann LeCun's LeNet-5 architecture
-    from the 1998 paper "Gradient-Based Learning Applied to Document Recognition".
+    This is a modernized implementation of Yann LeCun's LeNet-5 architecture
+    from the 1998 paper "Gradient-Based Learning Applied to Document Recognition",
+    with ReLU activations (a post-1998 improvement).
 
     ARCHITECTURE EXPLANATION:
 
@@ -32,19 +33,22 @@ class LeNet5(nn.Module):
     - Reduces spatial size while preserving important information
     - Makes the network robust to small distortions
 
-    Why Tanh activation?
-    - Original LeNet-5 used tanh (hyperbolic tangent), not ReLU
-    - Formula: tanh(x) = (e^x - e^{-x}) / (e^x + e^{-x})
-    - Output range: [-1, 1] (zero-centered, unlike sigmoid)
-    - Was state-of-the-art in 1998 before ReLU became popular
-    - Provides non-linearity with smooth gradients
+    Why ReLU activation?
+    - Original LeNet-5 used tanh (hyperbolic tangent), which was state-of-the-art in 1998
+    - Modern CNNs (post-2010) use ReLU (Rectified Linear Unit): f(x) = max(0, x)
+    - ReLU advantages:
+      * No vanishing gradient problem (gradient = 1 for positive inputs)
+      * Computationally cheaper (no exponential operations)
+      * Sparsity (activations are zero for negative inputs)
+      * Enables training of much deeper networks
+    - This implementation uses ReLU as an improvement over original tanh
 
     Why no dropout?
     - Dropout was invented after LeNet-5 (2012 vs 1998)
     - Original LeNet-5 relied on architecture design for regularization
     - The subsampling layers provide built-in regularization
 
-    LAYER DETAILS (following original LeNet-5):
+    LAYER DETAILS (following original LeNet-5 architecture):
 
     INPUT: 32x32 grayscale image
     Note: Original LeNet-5 used 32x32 inputs. We use 28x28 MNIST with padding=2
@@ -55,6 +59,7 @@ class LeNet5(nn.Module):
     - Output: 6 feature maps
     - 5x5 kernel, padding=2 keeps spatial size (32x32)
     - Learns basic features (edges, corners, curves)
+    - Activation: ReLU
 
     S2: AvgPool2d(2, stride=2)
     - 2x2 average pooling, stride 2 (no overlap)
@@ -65,9 +70,10 @@ class LeNet5(nn.Module):
     C3: Conv2d(6, 16, kernel_size=5)
     - Input: 6 feature maps from S2
     - Output: 16 feature maps
-    - NO padding (28x28 input would become 24x24, but S2 output is 16x16)
+    - NO padding (S2 output is 16x16)
     - With 5x5 kernel on 16x16 input → 12x12 output
     - Learns combinations of features from previous layer
+    - Activation: ReLU
 
     S4: AvgPool2d(2, stride=2)
     - 2x2 average pooling, stride 2
@@ -79,6 +85,7 @@ class LeNet5(nn.Module):
     - Output: 120 feature maps (each 1x1)
     - This is equivalent to a fully connected layer with 120 units
     - Convolution form is used for historical consistency
+    - Activation: ReLU (modernized)
 
     Flatten:
     - Converts (batch_size, 120, 1, 1) to (batch_size, 120)
@@ -87,12 +94,13 @@ class LeNet5(nn.Module):
     - Fully connected layer
     - 120 inputs → 84 outputs
     - 84 was chosen to match a 7x12 output grid (for character recognition)
-    - Adds non-linearity via tanh
+    - Activation: ReLU (modernized)
 
     Output: Linear(84, 10)
     - Final classification layer
     - 84 inputs → 10 outputs (digits 0-9)
     - Raw logits (softmax applied during loss calculation)
+    - No activation (linear layer)
     """
 
     def __init__(self):
@@ -140,28 +148,28 @@ class LeNet5(nn.Module):
             Raw logits of shape (batch_size, 10)
             (Use softmax separately to get probabilities)
         """
-        # C1: Conv2d(1,6,5x5) → Tanh → S2: AvgPool
+        # C1: Conv2d(1,6,5x5) → ReLU → S2: AvgPool
         # Input: (batch, 1, 28, 28) → Output: (batch, 6, 14, 14)
-        x = torch.tanh(self.conv1(x))
+        x = torch.relu(self.conv1(x))
         x = self.pool1(x)
 
-        # C3: Conv2d(6,16,5x5) → Tanh → S4: AvgPool
+        # C3: Conv2d(6,16,5x5) → ReLU → S4: AvgPool
         # Input: (batch, 6, 14, 14) → Output: (batch, 16, 5, 5)
         # Note: 14x14 with 5x5 kernel, no padding → 10x10, then pool → 5x5
-        x = torch.tanh(self.conv2(x))
+        x = torch.relu(self.conv2(x))
         x = self.pool2(x)
 
-        # C5: Conv2d(16,120,5x5) → Tanh
+        # C5: Conv2d(16,120,5x5) → ReLU
         # Input: (batch, 16, 5, 5) → Output: (batch, 120, 1, 1)
-        x = torch.tanh(self.conv3(x))
+        x = torch.relu(self.conv3(x))
 
         # Flatten: preserve batch dimension, collapse everything else
         # (batch, 120, 1, 1) → (batch, 120)
         x = x.view(x.size(0), -1)
 
-        # F6: Linear(120,84) → Tanh
+        # F6: Linear(120,84) → ReLU
         # (batch, 120) → (batch, 84)
-        x = torch.tanh(self.fc1(x))
+        x = torch.relu(self.fc1(x))
 
         # Output layer: Linear(84,10) - raw logits
         # (batch, 84) → (batch, 10)
