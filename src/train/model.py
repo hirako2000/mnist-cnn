@@ -15,7 +15,9 @@ class LeNet5(nn.Module):
 
     This is a modernized implementation of Yann LeCun's LeNet-5 architecture
     from the 1998 paper "Gradient-Based Learning Applied to Document Recognition",
-    with ReLU activations (a post-1998 improvement).
+    with two post-1998 improvements:
+    - ReLU activations (2010) - solves vanishing gradient problem
+    - Xavier/Glorot initialization (2010) - stable gradient variance
 
     ARCHITECTURE EXPLANATION:
 
@@ -41,7 +43,13 @@ class LeNet5(nn.Module):
       * Computationally cheaper (no exponential operations)
       * Sparsity (activations are zero for negative inputs)
       * Enables training of much deeper networks
-    - This implementation uses ReLU as an improvement over original tanh
+
+    Why Xavier/Glorot initialization?
+    - Original LeNet-5 used small random weights (e.g., uniform between -0.05 and 0.05)
+    - This naive approach causes vanishing/exploding gradients in deeper networks
+    - Xavier initialization sets weights with variance = 2/(fan_in + fan_out)
+    - Preserves signal variance through forward and backward passes
+    - Results in faster convergence and more stable training
 
     Why no dropout?
     - Dropout was invented after LeNet-5 (2012 vs 1998)
@@ -60,6 +68,7 @@ class LeNet5(nn.Module):
     - 5x5 kernel, padding=2 keeps spatial size (32x32)
     - Learns basic features (edges, corners, curves)
     - Activation: ReLU
+    - Initialization: Xavier uniform
 
     S2: AvgPool2d(2, stride=2)
     - 2x2 average pooling, stride 2 (no overlap)
@@ -74,6 +83,7 @@ class LeNet5(nn.Module):
     - With 5x5 kernel on 16x16 input → 12x12 output
     - Learns combinations of features from previous layer
     - Activation: ReLU
+    - Initialization: Xavier uniform
 
     S4: AvgPool2d(2, stride=2)
     - 2x2 average pooling, stride 2
@@ -85,7 +95,8 @@ class LeNet5(nn.Module):
     - Output: 120 feature maps (each 1x1)
     - This is equivalent to a fully connected layer with 120 units
     - Convolution form is used for historical consistency
-    - Activation: ReLU (modernized)
+    - Activation: ReLU
+    - Initialization: Xavier uniform
 
     Flatten:
     - Converts (batch_size, 120, 1, 1) to (batch_size, 120)
@@ -94,13 +105,15 @@ class LeNet5(nn.Module):
     - Fully connected layer
     - 120 inputs → 84 outputs
     - 84 was chosen to match a 7x12 output grid (for character recognition)
-    - Activation: ReLU (modernized)
+    - Activation: ReLU
+    - Initialization: Xavier uniform
 
     Output: Linear(84, 10)
     - Final classification layer
     - 84 inputs → 10 outputs (digits 0-9)
     - Raw logits (softmax applied during loss calculation)
     - No activation (linear layer)
+    - Initialization: Xavier uniform
     """
 
     def __init__(self):
@@ -136,6 +149,34 @@ class LeNet5(nn.Module):
         # Output layer
         # 84 inputs → 10 outputs (one per digit 0-9)
         self.fc2 = nn.Linear(84, 10)
+
+        # ----- XAVIER/GLOROT INITIALIZATION -----
+        # Apply Xavier uniform initialization to all convolutional and linear layers
+        # Formula: samples from Uniform(-a, a) where a = sqrt(6 / (fan_in + fan_out))
+        # This preserves signal variance through forward and backward passes
+        self._apply_xavier_init()
+
+    def _apply_xavier_init(self):
+        """
+        Apply Xavier/Glorot initialization to all Conv2d and Linear layers.
+
+        Xavier initialization (Glorot & Bengio, 2010) sets initial weights
+        such that the variance of activations remains stable across layers.
+        This prevents vanishing/exploding gradients and leads to faster convergence.
+
+        For uniform distribution: bounds = sqrt(6 / (fan_in + fan_out))
+        For normal distribution: std = sqrt(2 / (fan_in + fan_out))
+
+        This implementation uses the uniform variant (xavier_uniform_).
+        Biases are initialized to zero.
+        """
+        for module in self.modules():
+            if isinstance(module, (nn.Conv2d, nn.Linear)):
+                # Apply Xavier uniform initialization to weights
+                nn.init.xavier_uniform_(module.weight)
+                # Initialize bias to zero (standard practice)
+                if module.bias is not None:
+                    nn.init.constant_(module.bias, 0)
 
     def forward(self, x):
         """

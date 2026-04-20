@@ -16,7 +16,8 @@ default:
     @printf "  just viz history        - Training curves (loss/accuracy)\n"
     @printf "  just viz history-tanh   - Tanh model analysis\n"
     @printf "  just viz history-relu   - ReLU model analysis\n"
-    @printf "  just viz history-compare        - ReLU vs Tanh comparison\n\n"
+    @printf "  just viz history-xavier   - Xavier model analysis\n"
+    @printf "  just viz history-compare        -  From pure LeNET comparison\n\n"
     @printf "Batch Generation:\n"
     @printf "  just viz all            - Generate all dataset + prediction visualizations\n"
     @printf "  just viz all-history    - Generate all training history visualizations\n"
@@ -68,8 +69,12 @@ history-relu:
     @echo "📈 Generating ReLU (improved) training analysis..."
     @uv run python ../src/viz/training_history.py --type single --model relu
 
+history-xavier:
+    @echo "📈 Generating ReLU (improved) training analysis..."
+    @uv run python ../src/viz/training_history.py --type single --model xavier
+
 history-compare:
-    @echo "📊 Generating ReLU vs Tanh comparison..."
+    @echo "📊 Generating comparison..."
     @uv run python ../src/viz/training_history.py --type compare
 
 # ============================================
