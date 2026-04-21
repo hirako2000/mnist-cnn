@@ -98,7 +98,7 @@ And just <module> to see a particular module's commands:
 
 ## Dataset exploration
 
-The dataset is balanced across all digits, with 6,000 training samples and 1,000 test samples per class.
+The MNIST dataset is balanced across all digits, with 6,000 training samples and 1,000 test samples per class.
 
 ![Class distribution](./visualisations/class_distribution.avif)
 
@@ -156,7 +156,7 @@ This improvement bridges the 12-year gap between LeNet-5 (1998) and the deep lea
 
 ## How it works
 
-The model is a simple CNN with two convolutional layers, two max-pooling layers, and two fully connected layers. The [train.py](./src/train/train.py) code includes detailed comments explaining:
+LeNET-5 is a simple CNN with two convolutional layers, two max-pooling layers, and two fully connected layers. The [train.py](./src/train/train.py) code includes detailed comments explaining:
 
 - Why convolutions slide across images (position invariance)
 - What pooling does (reduces size, adds robustness)
@@ -168,6 +168,18 @@ The code uses Polars for efficient Parquet data loading and supports mixed preci
 The [model.py](./src/train/model.py) code is also thorougly commented. Along with train.py, they contain all the involved training logic.
 
 For inference, see [predict.py](./src/infer/predict.py).
+
+## 🌿 Improvement Branches
+
+Each technique is developed and documented on its own branch. Click to explore the code at each stage.
+
+| Branch | Technique | Year | Accuracy | Link |
+|--------|-----------|------|----------|------|
+| `improvement/relu` | ReLU Activation | 2010 | 99.11% | [🔗](/tree/improvement/relu) |
+| `improvement/xavier` | Xavier Init | 2010 | 99.19% | [🔗](/tree/improvement/xavier) |
+| `improvement/dropout` | Dropout | 2012 | 99.12% | [🔗](/tree/improvement/dropout) |
+| `improvement/maxpool` | Max Pooling | *pending* | — | [🔗](/tree/improvement/maxpool) |
+| `improvement/??` | ? | *pending* | — | [🔗](#) |
 
 ## Requirements
 
