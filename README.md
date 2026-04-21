@@ -173,13 +173,13 @@ For inference, see [predict.py](./src/infer/predict.py).
 
 Each technique is developed and documented on its own branch. Click to explore the code at each stage.
 
-| Branch | Technique | Year | Accuracy | Link |
+| Branch | Technique | Link |
 |--------|-----------|------|----------|------|
-| `improvement/relu` | ReLU Activation | 2010 | 99.11% | [🔗](./tree/improvement/relu) |
-| `improvement/xavier` | Xavier Init | 2010 | 99.19% | [🔗](./tree/improvement/xavier) |
-| `improvement/dropout` | Dropout | 2012 | 99.12% | [🔗](./tree/improvement/dropout) |
-| `improvement/maxpool` | Max Pooling | *pending* | — | [🔗](./tree/improvement/maxpool) |
-| `improvement/??` | ? | *pending* | — | [🔗](#) |
+| `improvement/relu`     | ReLU Activation   | [🔗](tree/improvement/relu)       |
+| `improvement/xavier`   | Xavier Init       | [🔗](tree/improvement/xavier)     |
+| `improvement/dropout`  | Dropout           | [🔗](tree/improvement/dropout)    |
+| `improvement/maxpool`  | Max Pooling       | [🔗](tree/improvement/maxpool)    |
+| `improvement/??`       | ?                 | *pending* | [🔗](#)               |
 
 ## Requirements
 
