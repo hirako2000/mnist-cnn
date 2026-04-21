@@ -174,7 +174,7 @@ For inference, see [predict.py](./src/infer/predict.py).
 Each technique is developed and documented on its own branch. Click to explore the code at each stage.
 
 | Branch | Technique | Link |
-|--------|-----------|------|----------|------|
+|--------|-----------|-------|
 | `improvement/relu`     | ReLU Activation   | [🔗](tree/improvement/relu)       |
 | `improvement/xavier`   | Xavier Init       | [🔗](tree/improvement/xavier)     |
 | `improvement/dropout`  | Dropout           | [🔗](tree/improvement/dropout)    |
