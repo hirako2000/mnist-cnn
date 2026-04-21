@@ -175,10 +175,10 @@ Each technique is developed and documented on its own branch. Click to explore t
 
 | Branch | Technique | Link |
 |--------|-----------|-------|
-| `improvement/relu`     | ReLU Activation   | [🔗](tree/improvement/relu)       |
-| `improvement/xavier`   | Xavier Init       | [🔗](tree/improvement/xavier)     |
-| `improvement/dropout`  | Dropout           | [🔗](tree/improvement/dropout)    |
-| `improvement/maxpool`  | Max Pooling       | [🔗](tree/improvement/maxpool)    |
+| `improvement/relu`     | ReLU Activation   | [🔗](../../tree/improvement/relu)       |
+| `improvement/xavier`   | Xavier Init       | [🔗](../../tree/improvement/xavier)     |
+| `improvement/dropout`  | Dropout           | [🔗](../../tree/improvement/dropout)    |
+| `improvement/maxpool`  | Max Pooling       | [🔗](../../tree/improvement/maxpool)    |
 | `improvement/??`       | ?                 | *pending* | [🔗](#)               |
 
 ## Requirements
