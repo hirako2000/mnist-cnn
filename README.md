@@ -16,13 +16,13 @@
 
 ---
 
-A Convolutional Neural Network for handwritten digit recognition, built with PyTorch. This project is designed for understanding.
+A Convolutional Neural Network for handwritten digit recognition, built with PyTorch. This project is designed for understanding. Evolving into AlexNet, and ResNet, and ConvNext v2.
 
-This architecture closely follows [LeNet-5](https://en.wikipedia.org/wiki/LeNet). The network introduced by Yann LeCun in 1998 for vision recognition. The design, convolutional layers followed by fully connected layers remains unchanged, demonstrating how this structure learns to read digits, already over twenty-five years ago.
+The baseline architecture closely follows [LeNet-5](https://en.wikipedia.org/wiki/LeNet). The network introduced by Yann LeCun in 1998 for vision recognition. The design, convolutional layers followed by fully connected layers remains unchanged, demonstrating how this structure learns to read digits, already over twenty-five years ago.
 
 ## The what
 
-Takes a 28x28 grayscale image of a handwritten digit (0-9) and predicts which digit it is. The model achieves ~99% accuracy on the MNIST test set after 5-10 epochs.
+Baseline takes a 28x28 grayscale image of a handwritten digit (0-9) and predicts which digit it is. The model achieves ~99% accuracy on the MNIST test set after 5-10 epochs.
 
 ## Sample images from the dataset
 
@@ -40,6 +40,15 @@ The code is organized into modules in the [src](./src/) folder:
 Training and inference supports MPS (Apple Silicon), CUDA (Nvidia GPU) or CPU.
 
 The web folder contains a simple web application to run inference via WebGPU.
+
+## Branch Structure
+
+- `master` – Original LeNet-5 with tanh activation
+- `improvement/relu` - ReLU replaces tanh
+- `improvement/*` – Each technique change in its own branch
+
+Each branch adds one iterative improvement listed in [roadmap](./ROADMAP.md). 
+
 ## Setup
 
 First, install [uv](https://docs.astral.sh/uv/getting-started/installation/), a fast Python package manager:
