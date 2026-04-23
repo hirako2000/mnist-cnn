@@ -38,7 +38,7 @@ The paper by Hinton and his colleagues provided a simple, effective solution to 
 
 ## What we changed
 
-We added two dropout layers. After each pooling layer, we applied spatial dropout with a rate of 0.25, dropping 25 percent of the feature maps. After the first fully connected layer, we applied standard dropout with a rate of 0.5, dropping half of the neurons. No dropout was applied before the output layer to preserve all information for classification.
+We added two dropout layers. After the activation of convolutional layers, we applied spatial dropout with a rate of 0.25, dropping 25 percent of the feature maps. After the first fully connected layer, we applied standard dropout with a rate of 0.5, dropping half of the neurons. No dropout was applied before the output layer to preserve all information for classification.
 
 The dropout layers were applied in the forward pass. The dataset remained identical. The optimizer, learning rate, and number of epochs were unchanged. This allowed us to isolate the effect of dropout and measure its impact directly.
 
